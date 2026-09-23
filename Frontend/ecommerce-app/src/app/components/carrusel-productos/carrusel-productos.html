@@ -1,7 +1,8 @@
 @if (productos().length > 0) {
-<section class="mb-10">
-  <div class="mb-4">
-    <h2 class="text-2xl font-bold text-base-content">{{ titulo() }}</h2>
+<section class="mb-14 md:mb-18">
+  <div class="mb-4 flex items-center gap-4">
+    <h2 class="text-xl md:text-2xl font-semibold text-base-content">{{ titulo() }}</h2>
+    <span class="h-px flex-1 bg-base-300"></span>
   </div>
 
   <div class="relative group">
@@ -20,7 +21,7 @@
     <div #scrollContainer (scroll)="onScroll()" class="flex gap-4 overflow-x-auto py-3 px-1 snap-x snap-mandatory scroll-smooth
              [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
       @for (producto of productos(); track producto.id) {
-      <div class="w-64 min-w-64 snap-start">
+      <div class="w-68 min-w-68 snap-start">
         <app-producto-card [producto]="producto" [agregando]="agregandoId() === producto.id"
           (agregarClick)="onAgregarClick($event)" />
       </div>

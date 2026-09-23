@@ -1,29 +1,18 @@
-<div class="card bg-base-100 border border-base-200 shadow-md
-            hover:shadow-2xl hover:-translate-y-1 hover:border-primary/30
+<div class="card h-full bg-base-100 border border-base-300/60
+            hover:-translate-y-1 hover:border-primary/35
             transition-all duration-300 overflow-hidden group">
 
   <!-- IMAGEN -->
   <a [routerLink]="['/productos', producto().id]" class="block">
-    <figure class="relative h-56 bg-base-200 overflow-hidden m-0 p-0">
+    <figure class="relative h-64 bg-base-200 overflow-hidden m-0 p-0">
 
-      @if (producto().imagenUrl) {
-      <img [src]="producto().imagenUrl" [alt]="producto().nombre"
-        class="block w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-      } @else {
-      <div class="flex flex-col items-center justify-center h-full text-base-content/30">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="w-12 h-12 mb-2 text-base-content/20">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="m20.25 7.5-8.25-4.5-8.25 4.5m16.5 0v9L12 21l-8.25-4.5v-9m16.5 0L12 12m0 0L3.75 7.5M12 12v9" />
-        </svg>
-        <span class="text-sm">Sin imagen</span>
-      </div>
-      }
+      <img [src]="imagenProducto()" [alt]="producto().nombre"
+        class="block w-full h-full object-cover group-hover:scale-[1.035] transition-transform duration-700" />
 
       <!-- CATEGORÍA -->
       <div class="absolute top-3 left-3">
         <span
-          class="badge bg-base-100/90 text-base-content backdrop-blur-sm border border-base-200/50 shadow-sm font-semibold">
+          class="badge bg-base-100/90 text-base-content backdrop-blur-sm border border-base-300/50 font-semibold text-[10px] uppercase tracking-wider">
           {{ producto().categoriaNombre }}
         </span>
 
@@ -40,25 +29,25 @@
 
 
   <!-- CONTENIDO -->
-  <div class="card-body p-5">
+  <div class="card-body p-5 gap-2">
 
     <div class="min-h-14">
       <a [routerLink]="['/productos', producto().id]" class="link link-hover">
-        <h2 class="font-bold text-lg leading-tight line-clamp-2 text-base-content" [title]="producto().nombre">
+        <h2 class="font-semibold text-lg leading-tight line-clamp-2 text-base-content" [title]="producto().nombre">
           {{ producto().nombre }}
         </h2>
       </a>
     </div>
 
     <div class="mt-1">
-      <span class="text-xs uppercase tracking-wider text-base-content/40 font-medium">Precio</span>
-      <p class="text-2xl font-black text-primary">${{ producto().precio | number:'1.0-0' }}</p>
+      <span class="text-[10px] uppercase tracking-[0.14em] text-base-content/40 font-semibold">Precio</span>
+      <p class="text-2xl font-bold text-base-content">${{ producto().precio | number:'1.0-0' }}</p>
     </div>
 
     <div class="card-actions mt-3">
-      <button class="btn btn-primary w-full rounded-xl shadow-sm hover:shadow-lg
-              hover:bg-primary-content hover:text-primary hover:border-primary
-              transition-all duration-200" [disabled]="agregando()" (click)="onAgregarClick()">
+      <button class="btn btn-neutral w-full rounded-full border-neutral
+              hover:bg-primary hover:border-primary transition-all duration-200"
+        [disabled]="agregando()" (click)="onAgregarClick()">
         @if (agregando()) {
         <span class="loading loading-spinner loading-sm"></span>
         Agregando...

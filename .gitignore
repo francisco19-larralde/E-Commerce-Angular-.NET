@@ -1,0 +1,20 @@
+# Angular / Node
+Frontend/ecommerce-app/node_modules/
+Frontend/ecommerce-app/dist/
+Frontend/ecommerce-app/.angular/
+
+# .NET
+Backend/**/bin/
+Backend/**/obj/
+Backend/**/*.user
+
+# Configuración local y secretos
+**/appsettings.Development.json
+**/appsettings.Production.json
+**/.env
+
+# Uploads y archivos locales
+Backend/Ecommerce.Api/wwwroot/uploads/
+.vscode/
+.DS_Store
+Thumbs.db

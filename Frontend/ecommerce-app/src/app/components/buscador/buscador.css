@@ -1,0 +1,21 @@
+:host { display: block; }
+.search-box { position: relative; width: 100%; }
+.search-box__form { display: grid; min-height: 2.75rem; grid-template-columns: auto 1fr auto; align-items: center; gap: .65rem; padding: 0 1rem; border: 1px solid rgba(41, 37, 34, .14); border-radius: 999px; background: rgba(255, 255, 255, .5); transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease; }
+.search-box__form:focus-within { border-color: rgba(168, 79, 53, .5); background: #fffaf3; box-shadow: 0 0 0 3px rgba(168, 79, 53, .08); }
+.search-box__form svg { width: 1rem; color: rgba(41, 37, 34, .45); }
+.search-box__form input { min-width: 0; width: 100%; border: 0; outline: 0; color: #292522; background: transparent; font: inherit; font-size: .75rem; }
+.search-box__form input::placeholder { color: rgba(41, 37, 34, .42); }
+.search-box__form input::-webkit-search-cancel-button { display: none; }
+.search-box__loader { width: .9rem; height: .9rem; border: 2px solid rgba(41, 37, 34, .15); border-top-color: #a84f35; border-radius: 50%; animation: spin .65s linear infinite; }
+.search-results { position: absolute; top: calc(100% + .65rem); right: 0; left: 0; z-index: 60; overflow: hidden; border: 1px solid rgba(41, 37, 34, .13); border-radius: 1rem; background: #fffaf3; box-shadow: 0 22px 50px rgba(41, 37, 34, .14); }
+.search-results ul { max-height: 330px; margin: 0; padding: .4rem; overflow-y: auto; list-style: none; }
+.search-results button { display: grid; width: 100%; grid-template-columns: 2.75rem 1fr auto; align-items: center; gap: .75rem; padding: .65rem; border: 0; border-radius: .75rem; color: #292522; background: transparent; font: inherit; text-align: left; cursor: pointer; }
+.search-results button:hover { background: #f2ece3; }
+.search-results__image { display: grid; width: 2.75rem; height: 2.75rem; place-items: center; overflow: hidden; border-radius: .65rem; color: #a84f35; background: #efe1d7; }
+.search-results__image img { width: 100%; height: 100%; object-fit: cover; }
+.search-results__copy { min-width: 0; display: flex; flex-direction: column; gap: .15rem; }
+.search-results__copy strong { overflow: hidden; font-size: .73rem; text-overflow: ellipsis; white-space: nowrap; }
+.search-results__copy small { color: rgba(41, 37, 34, .48); font-size: .63rem; }
+.search-results__price { color: #a84f35; font-size: .7rem; font-weight: 800; white-space: nowrap; }
+.search-results__empty { margin: 0; padding: 1.4rem; color: rgba(41, 37, 34, .55); font-size: .73rem; text-align: center; }
+@keyframes spin { to { transform: rotate(360deg); } }

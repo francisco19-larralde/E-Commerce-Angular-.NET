@@ -1,70 +1,73 @@
-<div class=" bg-base-200/30">
-  <div class="max-w-7xl mx-auto px-4 py-8 md:py-12">
-
-    <!-- HEADER -->
-    <div class="mb-8 md:mb-10">
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-        <div>
-          <h1 class="text-3xl md:text-4xl font-black tracking-tight text-base-content">
-            Productos destacados
-          </h1>
-          <p class="text-base-content/60 mt-2 max-w-xl">
-            Descubrí nuestros productos seleccionados y encontrá lo que estás buscando.
-          </p>
-        </div>
-
-        @if (!cargando() && !error()) {
-        <span class="badge badge-primary badge-outline px-4 py-3 font-semibold">
-          {{ productos().length }} productos
-        </span>
-        }
+<main class="store-home">
+  <section class="store-hero" aria-labelledby="store-title">
+    <div class="store-hero__copy">
+      <p class="store-hero__eyebrow">Nueva selección · 2026</p>
+      <h1 id="store-title" class="display-title">Encontrá eso que se siente muy vos.</h1>
+      <p class="store-hero__description">
+        Productos elegidos para acompañar tus días. Explorá la colección completa,
+        guardá tus favoritos y comprá de forma simple.
+      </p>
+      <div class="store-hero__actions">
+        <a routerLink="/catalogo" class="store-button">Ver todo el catálogo <span>→</span></a>
+        <a routerLink="/home" fragment="colecciones" class="store-link">Descubrir novedades</a>
       </div>
     </div>
 
-    <!-- LOADING -->
+    <div class="store-hero__visual">
+      <img src="/assets/store/home-editorial.jpg" alt="Calzado y accesorios en una composición de tonos neutros" />
+      <div class="store-hero__label"><span>✦</span> Selección de temporada</div>
+    </div>
+  </section>
+
+  <section class="trust-bar" aria-label="Beneficios de la tienda">
+    <div><span>✓</span><p><strong>Compra protegida</strong><small>Tus datos siempre seguros</small></p></div>
+    <div><span>↗</span><p><strong>Envíos a todo el país</strong><small>Seguimiento de tu pedido</small></p></div>
+    <div><span>↺</span><p><strong>Atención cercana</strong><small>Te ayudamos cuando lo necesites</small></p></div>
+  </section>
+
+  <section id="colecciones" class="products-area">
+    <header class="products-heading">
+      <div>
+        <p class="products-kicker">La selección Luma</p>
+        <h2 class="display-title">Piezas para descubrir y elegir.</h2>
+      </div>
+      @if (!cargando() && !error()) {
+      <span class="products-count">{{ productos().length }} productos disponibles</span>
+      }
+    </header>
+
     @if (cargando()) {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
       @for (item of [1, 2, 3, 4]; track item) {
-      <div class="card bg-base-100 border border-base-200 shadow-md overflow-hidden">
-        <div class="h-56 bg-base-300 animate-pulse"></div>
+      <div class="card bg-base-100 border border-base-300/60 overflow-hidden">
+        <div class="h-64 bg-base-300 animate-pulse"></div>
         <div class="card-body gap-3">
           <div class="h-5 w-3/4 bg-base-300 rounded-lg animate-pulse"></div>
           <div class="h-4 w-1/2 bg-base-300 rounded-lg animate-pulse"></div>
           <div class="h-7 w-1/3 bg-base-300 rounded-lg animate-pulse"></div>
-          <div class="h-11 w-full bg-base-300 rounded-xl animate-pulse"></div>
+          <div class="h-11 w-full bg-base-300 rounded-full animate-pulse"></div>
         </div>
       </div>
       }
     </div>
     }
 
-    <!-- ERROR -->
     @if (error()) {
-    <div class="card bg-base-100 border border-error/20 shadow-lg">
-      <div class="card-body items-center text-center py-14">
-        <div class="w-20 h-20 rounded-full bg-error/10 flex items-center justify-center mb-3">
-          <span class="text-4xl">⚠️</span>
-        </div>
-        <h2 class="text-xl font-bold text-base-content">Ocurrió un problema</h2>
-        <p class="text-base-content/60">{{ error() }}</p>
-      </div>
+    <div class="state-card">
+      <div><span class="state-card__icon">!</span><h3>No pudimos cargar la colección</h3><p>{{ error() }}</p></div>
     </div>
     }
 
     @if (!cargando() && !error()) {
+      @if (destacados().length > 0) {
+      <app-carrusel-productos titulo="Favoritos de la semana" [productos]="destacados()" [agregandoId]="agregandoId()"
+        (agregarClick)="agregarAlCarrito($event)" />
+      }
 
-    <!-- DESTACADOS -->
-    @if (destacados().length > 0) {
-    <app-carrusel-productos titulo="Productos destacados" [productos]="destacados()" [agregandoId]="agregandoId()"
-      (agregarClick)="agregarAlCarrito($event)" />
+      @for (grupo of categorias(); track grupo.categoriaId) {
+      <app-carrusel-productos [titulo]="grupo.nombre" [productos]="grupo.productos" [agregandoId]="agregandoId()"
+        (agregarClick)="agregarAlCarrito($event)" />
+      }
     }
-
-    <!-- CATEGORÍAS -->
-    @for (grupo of categorias(); track grupo.categoriaId) {
-    <app-carrusel-productos [titulo]="grupo.nombre" [productos]="grupo.productos" [agregandoId]="agregandoId()"
-      (agregarClick)="agregarAlCarrito($event)" />
-    }
-    }
-
-  </div>
-</div>
+  </section>
+</main>

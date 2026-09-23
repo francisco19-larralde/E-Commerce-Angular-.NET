@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 
@@ -6,5 +6,16 @@ import { RouterLink } from '@angular/router';
   selector: 'app-landing',
   imports: [RouterLink],
   templateUrl: './landing.html',
+  styleUrl: './landing.css'
 })
-export class Landing { }
+export class Landing {
+  menuAbierto = signal(false);
+
+  alternarMenu(): void {
+    this.menuAbierto.update((abierto) => !abierto);
+  }
+
+  cerrarMenu(): void {
+    this.menuAbierto.set(false);
+  }
+}

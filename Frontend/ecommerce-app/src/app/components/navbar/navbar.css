@@ -1,0 +1,60 @@
+:host { display: block; position: sticky; top: 0; z-index: 50; }
+.store-nav { color: #292522; background: color-mix(in srgb, #f8f4ed 94%, transparent); border-bottom: 1px solid rgba(41, 37, 34, .13); backdrop-filter: blur(18px); }
+.store-nav__inner { width: min(100% - 2rem, 1360px); min-height: 76px; margin: 0 auto; display: grid; grid-template-columns: auto auto minmax(220px, 1fr) auto; align-items: center; gap: clamp(1.25rem, 2.8vw, 3.5rem); }
+.store-nav__brand { display: inline-flex; align-items: center; gap: .72rem; color: inherit; text-decoration: none; }
+.store-nav__monogram { display: grid; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: 50%; color: #f8f4ed; background: #292522; font-family: Georgia, serif; font-size: 1rem; }
+.store-nav__wordmark { font-size: .84rem; font-weight: 850; letter-spacing: .18em; }
+.store-nav__links { display: flex; align-items: center; gap: 1.4rem; }
+.store-nav__links a, .nav-text-action { position: relative; color: rgba(41, 37, 34, .66); font-size: .73rem; font-weight: 700; text-decoration: none; transition: color 160ms ease; }
+.store-nav__links a::after { content: ""; position: absolute; right: 0; bottom: -.5rem; left: 0; height: 1px; background: #a84f35; transform: scaleX(0); transform-origin: left; transition: transform 180ms ease; }
+.store-nav__links a:hover, .nav-text-action:hover { color: #292522; }
+.store-nav__links a:hover::after { transform: scaleX(1); }
+.store-nav__search { width: min(100%, 460px); justify-self: center; }
+.store-nav__actions { display: flex; align-items: center; justify-content: flex-end; gap: .9rem; }
+.nav-primary-action { display: inline-flex; min-height: 2.55rem; align-items: center; justify-content: center; padding: 0 1.15rem; border-radius: 999px; color: #fffaf3; background: #a84f35; font-size: .72rem; font-weight: 750; text-decoration: none; transition: background 160ms ease, transform 160ms ease; }
+.nav-primary-action:hover { background: #8f3f29; transform: translateY(-1px); }
+.nav-icon-action { position: relative; display: grid; width: 2.55rem; height: 2.55rem; place-items: center; border: 1px solid rgba(41, 37, 34, .16); border-radius: 50%; color: #292522; text-decoration: none; transition: border-color 160ms ease, background 160ms ease; }
+.nav-icon-action:hover { border-color: #a84f35; background: rgba(168, 79, 53, .08); }
+.nav-icon-action svg { width: 1.15rem; height: 1.15rem; }
+.nav-icon-action__count { position: absolute; top: -.28rem; right: -.28rem; display: grid; min-width: 1.1rem; height: 1.1rem; place-items: center; padding: 0 .2rem; border-radius: 999px; color: #fff; background: #a84f35; font-size: .58rem; font-weight: 800; }
+.account-menu { position: relative; }
+.account-menu summary { display: flex; align-items: center; gap: .55rem; list-style: none; cursor: pointer; }
+.account-menu summary::-webkit-details-marker { display: none; }
+.account-menu summary > span { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: 50%; color: #8f3f29; background: #efe1d7; font-size: .76rem; font-weight: 800; }
+.account-menu summary strong { max-width: 90px; overflow: hidden; font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
+.account-menu summary svg { width: .75rem; }
+.account-menu__panel { position: absolute; top: calc(100% + 1rem); right: 0; width: 210px; padding: .75rem; border: 1px solid rgba(41, 37, 34, .13); border-radius: 1rem; background: #fffaf3; box-shadow: 0 20px 50px rgba(41, 37, 34, .12); }
+.account-menu__panel p { margin: .25rem .45rem .6rem; color: rgba(41, 37, 34, .45); font-size: .62rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.account-menu__panel a, .account-menu__panel button { display: block; width: 100%; padding: .72rem .8rem; border: 0; border-radius: .7rem; color: #292522; background: transparent; font: inherit; font-size: .76rem; text-align: left; text-decoration: none; cursor: pointer; }
+.account-menu__panel a:hover { background: #f2ece3; }
+.account-menu__panel button { color: #a13f32; }
+.store-nav__mobile-actions { display: none; align-items: center; gap: .6rem; }
+.menu-toggle { display: grid; width: 2.55rem; height: 2.55rem; place-content: center; gap: .32rem; border: 1px solid rgba(41, 37, 34, .16); border-radius: 50%; color: #292522; background: transparent; cursor: pointer; }
+.menu-toggle span { display: block; width: 1rem; height: 1px; background: currentColor; transition: transform 180ms ease; }
+.menu-toggle--open span:first-child { transform: translateY(.16rem) rotate(45deg); }
+.menu-toggle--open span:last-child { transform: translateY(-.16rem) rotate(-45deg); }
+.mobile-menu { padding: 0 max(1rem, calc((100vw - 1360px) / 2)) 1.3rem; border-top: 1px solid rgba(41, 37, 34, .1); background: #f8f4ed; animation: menu-in 180ms ease both; }
+.mobile-menu__search { padding: 1rem 0; }
+.mobile-menu nav { border-top: 1px solid rgba(41, 37, 34, .13); }
+.mobile-menu nav a { display: grid; grid-template-columns: 2rem 1fr auto; align-items: center; padding: 1rem 0; border-bottom: 1px solid rgba(41, 37, 34, .13); color: #292522; font-family: Georgia, serif; font-size: 1.45rem; text-decoration: none; }
+.mobile-menu nav a span { color: #a84f35; font-family: Inter, sans-serif; font-size: .58rem; font-weight: 800; }
+.mobile-menu nav a b { font-family: Inter, sans-serif; font-size: .8rem; }
+.mobile-menu__account { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding-top: 1.2rem; }
+.mobile-menu__account p { margin: 0; font-size: .76rem; }
+.mobile-menu__account > a:not(.nav-primary-action), .mobile-menu__account button { border: 0; color: #292522; background: transparent; font: inherit; font-size: .75rem; font-weight: 700; text-decoration: none; cursor: pointer; }
+@keyframes menu-in { from { opacity: 0; transform: translateY(-8px); } }
+
+@media (max-width: 1120px) {
+  .store-nav__inner { grid-template-columns: auto minmax(220px, 1fr) auto; }
+  .store-nav__links { display: none; }
+  .store-nav__actions .nav-text-action { display: none; }
+}
+
+@media (max-width: 760px) {
+  .store-nav__inner { min-height: 68px; grid-template-columns: 1fr auto; gap: 1rem; }
+  .store-nav__search, .store-nav__actions { display: none; }
+  .store-nav__mobile-actions { display: flex; }
+  .store-nav__monogram { width: 2.1rem; height: 2.1rem; }
+}
+
+@media (min-width: 761px) { .mobile-menu { display: none; } }

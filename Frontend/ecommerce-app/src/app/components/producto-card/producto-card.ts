@@ -27,4 +27,20 @@ export class ProductoCard {
 
     this.agregarClick.emit(producto);
   }
+
+  imagenProducto(): string {
+    const producto = this.producto();
+
+    if (producto.imagenUrl) {
+      return producto.imagenUrl;
+    }
+
+    const categoria = producto.categoriaNombre?.toLocaleLowerCase('es') ?? '';
+
+    if (categoria.includes('calzado')) return '/assets/store/fallback-calzado.jpg';
+    if (categoria.includes('indumentaria')) return '/assets/store/fallback-indumentaria.jpg';
+    if (categoria.includes('accesorio')) return '/assets/store/fallback-accesorios.jpg';
+
+    return '/assets/store/landing-hero.jpg';
+  }
 }

@@ -1,56 +1,38 @@
-<div class="relative w-full max-w-md">
-
-  <form (ngSubmit)="onSubmit()" class="relative">
-    <input type="text" placeholder="Buscar productos..." class="input input-bordered w-full pr-10" [ngModel]="termino()"
-      (ngModelChange)="onInput($event)" name="busqueda" autocomplete="off" />
-
-    <div class="absolute right-3 top-1/2 -translate-y-1/2">
-      @if (buscando()) {
-      <span class="loading loading-spinner loading-sm text-base-content/40"></span>
-      } @else {
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-        class="w-5 h-5 text-base-content/40">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-      </svg>
-      }
-    </div>
+<div class="search-box">
+  <form (ngSubmit)="onSubmit()" class="search-box__form">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="m21 21-5.2-5.2m0 0A7.5 7.5 0 1 0 5.2 5.2a7.5 7.5 0 0 0 10.6 10.6Z" />
+    </svg>
+    <input type="search" placeholder="¿Qué estás buscando?" [ngModel]="termino()"
+      (ngModelChange)="onInput($event)" name="busqueda" autocomplete="off" aria-label="Buscar productos" />
+    @if (buscando()) { <span class="search-box__loader"></span> }
   </form>
 
   @if (mostrarDropdown() && termino().trim().length >= 2) {
-  <div class="absolute top-full left-0 right-0 mt-2 z-50
-                card bg-base-100 border border-base-200 shadow-xl overflow-hidden">
-
+  <div class="search-results">
     @if (resultados().length > 0) {
-    <ul class="max-h-80 overflow-y-auto">
+    <ul>
       @for (producto of resultados(); track producto.id) {
       <li>
-        <button type="button"
-          class="w-full flex items-center gap-3 p-3 hover:bg-base-200/60 transition-colors text-left"
-          (click)="irADetalle(producto)">
-          <div class="w-12 h-12 rounded-lg bg-base-200 overflow-hidden shrink-0">
+        <button type="button" (click)="irADetalle(producto)">
+          <span class="search-results__image">
             @if (producto.imagenUrl) {
-            <img [src]="producto.imagenUrl" [alt]="producto.nombre" class="w-full h-full object-cover" />
-            }
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="font-medium text-sm truncate">{{ producto.nombre }}</p>
-            <p class="text-xs text-base-content/50">{{ producto.categoriaNombre }}</p>
-          </div>
-          <span class="text-sm font-bold text-primary whitespace-nowrap">
-            ${{ producto.precio | number:'1.0-0' }}
+            <img [src]="producto.imagenUrl" [alt]="producto.nombre" />
+            } @else { <b>{{ producto.nombre.charAt(0) }}</b> }
           </span>
+          <span class="search-results__copy">
+            <strong>{{ producto.nombre }}</strong>
+            <small>{{ producto.categoriaNombre }}</small>
+          </span>
+          <span class="search-results__price">${{ producto.precio | number:'1.0-0' }}</span>
         </button>
       </li>
       }
     </ul>
     } @else if (!buscando()) {
-    <div class="p-6 text-center text-base-content/50 text-sm">
-      No encontramos productos que coincidan con "{{ termino() }}"
-    </div>
+    <p class="search-results__empty">No encontramos resultados para “{{ termino() }}”.</p>
     }
-
   </div>
   }
-
 </div>

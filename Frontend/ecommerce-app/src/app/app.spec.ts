@@ -1,6 +1,7 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
+import { routes } from './app.routes';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -16,10 +17,11 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(App);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, ecommerce-app');
+  it('should keep admin routes behind authorization guards', () => {
+    const admin = routes.find(route => route.path === 'admin');
+    const checkout = routes.find(route => route.path === 'checkout');
+
+    expect(admin?.canActivate?.length).toBeGreaterThan(0);
+    expect(checkout?.canActivate?.length).toBeGreaterThan(0);
   });
 });

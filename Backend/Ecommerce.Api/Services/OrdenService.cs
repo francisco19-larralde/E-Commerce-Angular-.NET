@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Ecommerce.Api.Data;
 using Ecommerce.Api.Models;
 using Ecommerce.Api.DTOs;
+using System.Data;
 
 namespace Ecommerce.Api.Services;
 
@@ -16,6 +17,8 @@ public class OrdenService : IOrdenService
 
     public async Task<ResultadoOperacion<OrdenDto>> RealizarCheckoutAsync(string usuarioId, CheckoutDto dto)
     {
+        await using var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+
         var carrito = await _context.Carritos
             .Include(c => c.Items).ThenInclude(i => i.Producto)
             .Include(c => c.Items).ThenInclude(i => i.Variante)
@@ -60,7 +63,7 @@ public class OrdenService : IOrdenService
         }
 
 
-        var subtotal = carrito.Items.Sum(i => (i.Variante?.Stock is not null ? i.Producto!.Precio : i.Producto!.Precio) * i.Cantidad);
+        var subtotal = carrito.Items.Sum(i => i.Producto!.Precio * i.Cantidad);
         var porcentajeDescuento = cupon?.PorcentajeDescuento ?? 0;
         var descuento = Math.Round(subtotal * porcentajeDescuento / 100m, 2);
         var total = subtotal - descuento;
@@ -128,6 +131,8 @@ public class OrdenService : IOrdenService
         }
 
         await _context.SaveChangesAsync();
+
+        await transaction.CommitAsync();
 
         return ResultadoOperacion<OrdenDto>.Ok(MapearADto(orden));
     }

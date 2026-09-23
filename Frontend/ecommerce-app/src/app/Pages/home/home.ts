@@ -5,8 +5,7 @@ import { ProductoService } from '../../Services/producto.service';
 import { CategoriaService } from '../../Services/categoria.service';
 import { CarritoService } from '../../Services/carrito.service';
 import { AuthService } from '../../Services/auth.service';
-import { Router } from '@angular/router';
-import { ProductoCard } from '../../components/producto-card/producto-card';
+import { Router, RouterLink } from '@angular/router';
 import { CarruselProductos } from '../../components/carrusel-productos/carrusel-productos';
 
 interface GrupoCategoria {
@@ -17,7 +16,7 @@ interface GrupoCategoria {
 
 @Component({
   selector: 'app-home',
-  imports: [CarruselProductos],
+  imports: [CarruselProductos, RouterLink],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })

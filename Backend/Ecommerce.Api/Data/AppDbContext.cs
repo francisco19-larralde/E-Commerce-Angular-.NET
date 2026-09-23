@@ -25,6 +25,13 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<Producto>().Property(p => p.Precio).HasPrecision(18, 2);
+        builder.Entity<Orden>().Property(o => o.Subtotal).HasPrecision(18, 2);
+        builder.Entity<Orden>().Property(o => o.Descuento).HasPrecision(18, 2);
+        builder.Entity<Orden>().Property(o => o.Total).HasPrecision(18, 2);
+        builder.Entity<OrdenItem>().Property(i => i.PrecioUnitario).HasPrecision(18, 2);
+        builder.Entity<OrdenItem>().Property(i => i.Subtotal).HasPrecision(18, 2);
     }
 
 }

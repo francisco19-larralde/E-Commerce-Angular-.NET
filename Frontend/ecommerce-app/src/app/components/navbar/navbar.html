@@ -1,294 +1,97 @@
-<div
-  class="navbar bg-base-100/95 backdrop-blur-md shadow-lg border-b border-base-200 px-2 sm:px-4 md:px-8 sticky top-0 z-50 grid grid-cols-[1fr_auto_1fr]">
-
-  <!-- LOGO -->
-  <div class="min-w-0 justify-self-start">
-
-    <a routerLink="/home" class="flex w-fit shrink-0 items-center gap-2 sm:gap-2.5 group">
-
-      <!-- ICONO -->
-      <div class="w-9 h-9 sm:w-10 sm:h-10
-            shrink-0
-            rounded-xl
-            bg-primary/10
-            border border-primary/20
-            text-primary
-            flex items-center justify-center
-            shadow-sm
-            transition-all duration-200
-            group-hover:bg-primary
-            group-hover:text-primary-content
-            group-hover:border-primary
-            group-hover:shadow-md
-            group-hover:scale-105">
-        <span class="text-lg sm:text-xl
-              font-black
-              leading-none
-              select-none">
-          M
-        </span>
-      </div>
-
-
-      <!-- TEXTO -->
-      <div class="flex flex-col
-             leading-none
-             min-w-0">
-
-        <span class="text-base sm:text-xl
-               font-black
-               tracking-tight
-               text-base-content
-               truncate
-               transition-colors duration-200">
-          Mi<span class="text-primary">Ecommerce</span>
-        </span>
-
-
-        <span class="hidden sm:block
-               text-[10px]
-               uppercase
-               tracking-[0.2em]
-               text-base-content/40
-               truncate
-               mt-1">
-          Tu tienda online
-        </span>
-
-      </div>
-
+<header class="store-nav">
+  <div class="store-nav__inner">
+    <a routerLink="/home" class="store-nav__brand" (click)="cerrarMenu()" aria-label="Luma, inicio">
+      <span class="store-nav__monogram">L</span>
+      <span class="store-nav__wordmark">LUMA</span>
     </a>
-  </div>
 
-  <!-- CENTRO -->
-  <div class="hidden md:flex items-center justify-center gap-4 w-[min(50rem,50vw)] px-4">
+    <nav class="store-nav__links" aria-label="Navegación de la tienda">
+      <a routerLink="/home">Inicio</a>
+      <a routerLink="/catalogo">Catálogo</a>
+    </nav>
 
-    <div class="flex-1 min-w-0">
+    <div class="store-nav__search">
       <app-buscador />
     </div>
 
-    <a routerLink="/catalogo" class="shrink-0 text-sm font-semibold
-           text-base-content/60
-           hover:text-primary
-           transition-colors duration-200
-           whitespace-nowrap">
-      Ver todo el catálogo
-    </a>
+    <div class="store-nav__actions">
+      @if (authService.estaLogueado()) {
+        @if (authService.esAdmin()) {
+        <a routerLink="/admin/productos" class="nav-text-action">Administrar</a>
+        }
 
-  </div>
+        <a routerLink="/carrito" class="nav-icon-action" aria-label="Ver carrito">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75A2.25 2.25 0 0 0 8.93 14.5h7.94a2.25 2.25 0 0 0 2.18-1.75l1.35-5.625a.75.75 0 0 0-.728-.925H5.106Zm3.894 12.728a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm9 0a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z" />
+          </svg>
+          @if (carritoService.cantidadItems() > 0) {
+          <span class="nav-icon-action__count">{{ carritoService.cantidadItems() }}</span>
+          }
+        </a>
 
-  <!-- DERECHA -->
-  <div class="ml-2 justify-self-end">
+        <details class="account-menu">
+          <summary aria-label="Abrir menú de usuario">
+            <span>{{ authService.usuario()?.nombre?.charAt(0)?.toUpperCase() }}</span>
+            <strong>{{ authService.usuario()?.nombre }}</strong>
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg>
+          </summary>
+          <div class="account-menu__panel">
+            <p>Mi cuenta</p>
+            <a routerLink="/mis-compras">Mis compras</a>
+            <button type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+          </div>
+        </details>
+      } @else {
+        <a routerLink="/login" class="nav-text-action">Ingresar</a>
+        <a routerLink="/registro" class="nav-primary-action">Crear cuenta</a>
+      }
+    </div>
 
-    @if (authService.estaLogueado()) {
-
-    <div class="flex items-center gap-1 sm:gap-2">
-      @if (authService.esAdmin()) {
-      <a routerLink="/admin/productos" class="btn btn-ghost btn-sm sm:btn-md
-               px-2 sm:px-3
-               gap-2
-               rounded-xl
-               text-base-content/70
-               hover:bg-primary/10
-               hover:text-primary
-               transition-all duration-200">
-
-        <!-- Icono panel admin -->
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"
-          class="w-5 h-5 sm:w-6 sm:h-6">
+    <div class="store-nav__mobile-actions">
+      @if (authService.estaLogueado()) {
+      <a routerLink="/carrito" class="nav-icon-action" aria-label="Ver carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round"
-            d="M3.75 3.75h6.5v6.5h-6.5zM13.75 3.75h6.5v6.5h-6.5zM3.75 13.75h6.5v6.5h-6.5zM13.75 13.75h6.5v6.5h-6.5z" />
+            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75A2.25 2.25 0 0 0 8.93 14.5h7.94a2.25 2.25 0 0 0 2.18-1.75l1.35-5.625a.75.75 0 0 0-.728-.925H5.106Zm3.894 12.728a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm9 0a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z" />
         </svg>
-
-        <span class="hidden sm:inline font-semibold">
-          Panel Admin
-        </span>
+        @if (carritoService.cantidadItems() > 0) {
+        <span class="nav-icon-action__count">{{ carritoService.cantidadItems() }}</span>
+        }
       </a>
       }
 
-      <!-- CARRITO -->
-      <a routerLink="/carrito" class="btn btn-ghost btn-sm sm:btn-md
-         px-2 sm:px-3
-         gap-2
-         rounded-xl
-         text-base-content/70
-         hover:bg-primary/10
-         hover:text-primary
-         transition-all duration-200">
-        <div class="indicator">
-
-          <!-- Icono carrito outline -->
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
-            stroke="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75A2.25 2.25 0 0 0 8.93 14.5h7.94a2.25 2.25 0 0 0 2.18-1.75l1.35-5.625a.75.75 0 0 0-.728-.925H5.106Zm0 0L4.5 3.75m4.5 14.25a1.125 1.125 0 1 1-2.25 0 1.125 1.125 0 0 1 2.25 0Zm8.25 0a1.125 1.125 0 1 1-2.25 0 1.125 1.125 0 0 1 2.25 0Z" />
-          </svg>
-
-          @if (carritoService.cantidadItems() > 0) {
-          <span class="badge badge-primary badge-xs
-             indicator-item
-             min-w-4 h-4
-             px-1
-             font-bold
-             border-2 border-base-100">
-            {{ carritoService.cantidadItems() }}
-          </span>
-          }
-
-        </div>
-
-        <span class="hidden sm:inline font-semibold">
-          Carrito
-        </span>
-      </a>
-
-
-      <!-- SEPARADOR -->
-      <div class="hidden md:block w-px h-8 bg-base-300"></div>
-
-      <!-- USUARIO -->
-      <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button"
-          class="flex items-center gap-1 sm:gap-2 px-1 sm:px-2 py-1.5 rounded-xl hover:bg-base-200 transition-colors cursor-pointer">
-
-          <!-- AVATAR -->
-          <div class="w-8 h-8 sm:w-9 sm:h-9
-         shrink-0
-         rounded-full
-         bg-primary/10
-         border border-primary/20
-         text-primary
-         flex items-center justify-center
-         shadow-sm
-         transition-all duration-200
-         group-hover:bg-primary
-         group-hover:text-primary-content
-         group-hover:border-primary">
-            <span class="font-bold
-           text-xs sm:text-sm
-           leading-none
-           select-none">
-              {{ authService.usuario()?.nombre?.charAt(0)?.toUpperCase() }}
-            </span>
-          </div>
-
-
-          <!-- NOMBRE -->
-          <div class="hidden lg:flex flex-col leading-tight text-left">
-            <span class="text-xs text-base-content/50">
-              Bienvenido
-            </span>
-
-            <span class="text-sm font-bold max-w-32 truncate">
-              {{ authService.usuario()?.nombre }}
-            </span>
-          </div>
-
-          <!-- FLECHA -->
-          <span class="hidden md:inline text-xs text-base-content/50">
-            ▼
-          </span>
-        </div>
-
-        <!-- DROPDOWN -->
-        <ul tabindex="0" class="dropdown-content z-1 menu p-2 mt-3 shadow-xl bg-base-100
-                 rounded-2xl w-56 border border-base-200">
-          <li class="menu-title">
-            <span class="text-base-content">
-              {{ authService.usuario()?.nombre }}
-            </span>
-          </li>
-          <li>
-            <a routerLink="/mis-compras" class="flex items-center gap-2
-           w-full
-           px-3 py-2.5
-           rounded-xl
-           text-base-content/70
-           font-semibold
-           hover:bg-primary/10
-           hover:text-primary
-           transition-all duration-200">
-
-              <!-- Icono compras -->
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
-                stroke="currentColor" class="w-5 h-5 shrink-0">
-
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5l-1.5 13.5H5.25L3.75 6.75Z" />
-
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75a3.75 3.75 0 0 1 7.5 0" />
-
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 11.25h.01M15 11.25h.01" />
-              </svg>
-
-              <span>
-                Mis compras
-              </span>
-            </a>
-          </li>
-
-
-          <li>
-            <button (click)="cerrarSesion()" class="flex items-center gap-2
-         text-error
-         hover:bg-error
-         hover:text-error-content
-         rounded-lg
-         transition-all duration-200">
-              <!-- Log out outline -->
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
-                stroke="currentColor" class="w-5 h-5 shrink-0">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6A2.25 2.25 0 0 0 5.25 5.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15" />
-
-                <path stroke-linecap="round" stroke-linejoin="round" d="M18 8.25 21.75 12 18 15.75M21.75 12H9" />
-              </svg>
-
-              <span>
-                Cerrar sesión
-              </span>
-            </button>
-
-          </li>
-        </ul>
-      </div>
+      <button type="button" class="menu-toggle" [class.menu-toggle--open]="menuAbierto()"
+        (click)="alternarMenu()" [attr.aria-expanded]="menuAbierto()" aria-controls="mobile-store-menu"
+        aria-label="Abrir menú">
+        <span></span><span></span>
+      </button>
     </div>
-
-    } @else {
-
-    <!-- NO LOGUEADO -->
-    <div class="flex items-center gap-1 sm:gap-2">
-
-      <!-- INICIAR SESIÓN -->
-      <a routerLink="/login" class="btn btn-outline btn-primary btn-sm sm:btn-md
-               px-2 sm:px-4 rounded-xl font-semibold whitespace-nowrap
-               transition-all duration-200
-               hover:-translate-y-0.5 hover:shadow-md">
-        <span class="hidden sm:inline">
-          Iniciar sesión
-        </span>
-
-        <span class="sm:hidden">
-          Entrar
-        </span>
-      </a>
-
-      <!-- REGISTRARME -->
-      <a routerLink="/registro" class="btn btn-primary btn-sm sm:btn-md
-               rounded-xl px-3 sm:px-4
-               shadow-md hover:shadow-lg
-               hover:-translate-y-0.5
-               transition-all duration-200
-               whitespace-nowrap">
-        <span class="hidden sm:inline">
-          Registrarme
-        </span>
-
-        <span class="sm:hidden">
-          Registro
-        </span>
-      </a>
-
-    </div>
-    }
   </div>
-</div>
+
+  @if (menuAbierto()) {
+  <div id="mobile-store-menu" class="mobile-menu">
+    <div class="mobile-menu__search"><app-buscador /></div>
+    <nav aria-label="Navegación móvil">
+      <a routerLink="/home" (click)="cerrarMenu()"><span>01</span> Inicio <b>→</b></a>
+      <a routerLink="/catalogo" (click)="cerrarMenu()"><span>02</span> Catálogo <b>→</b></a>
+      @if (authService.estaLogueado()) {
+        <a routerLink="/mis-compras" (click)="cerrarMenu()"><span>03</span> Mis compras <b>→</b></a>
+        @if (authService.esAdmin()) {
+        <a routerLink="/admin/productos" (click)="cerrarMenu()"><span>04</span> Administrar <b>→</b></a>
+        }
+      }
+    </nav>
+
+    <div class="mobile-menu__account">
+      @if (authService.estaLogueado()) {
+        <p>Hola, <strong>{{ authService.usuario()?.nombre }}</strong></p>
+        <button type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+      } @else {
+        <a routerLink="/login" (click)="cerrarMenu()">Ingresar</a>
+        <a routerLink="/registro" class="nav-primary-action" (click)="cerrarMenu()">Crear cuenta</a>
+      }
+    </div>
+  </div>
+  }
+</header>

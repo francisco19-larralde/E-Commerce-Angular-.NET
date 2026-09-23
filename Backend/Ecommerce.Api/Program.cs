@@ -38,8 +38,15 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "Falta ConnectionStrings:DefaultConnection. Copiá appsettings.Example.json como appsettings.Development.json o configurá la variable ConnectionStrings__DefaultConnection.");
+}
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
@@ -57,7 +64,12 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 
-var jwtKey = builder.Configuration["Jwt:Key"]!;
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException(
+        "Falta Jwt:Key. Configurala en appsettings.Development.json, User Secrets o la variable Jwt__Key.");
+}
 
 builder.Services.AddAuthentication(options =>
 {
