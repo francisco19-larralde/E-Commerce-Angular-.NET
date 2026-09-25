@@ -44,7 +44,12 @@ public class ImagenService : IImagenService
         }
 
         var urlAnterior = producto.ImagenUrl;
-        var urlPublica = await _almacenamiento.GuardarAsync(archivo, extension, urlBase);
+        var nombreArchivo = $"{producto.Nombre}-{producto.Id}";
+        var urlPublica = await _almacenamiento.GuardarAsync(
+            archivo,
+            extension,
+            nombreArchivo,
+            urlBase);
         producto.ImagenUrl = urlPublica;
 
         try
@@ -53,11 +58,17 @@ public class ImagenService : IImagenService
         }
         catch
         {
-            await _almacenamiento.EliminarAsync(urlPublica);
+            if (!string.Equals(urlAnterior, urlPublica, StringComparison.OrdinalIgnoreCase))
+            {
+                await _almacenamiento.EliminarAsync(urlPublica);
+            }
             throw;
         }
 
-        await _almacenamiento.EliminarAsync(urlAnterior);
+        if (!string.Equals(urlAnterior, urlPublica, StringComparison.OrdinalIgnoreCase))
+        {
+            await _almacenamiento.EliminarAsync(urlAnterior);
+        }
 
         return ResultadoOperacion<string>.Ok(urlPublica);
     }

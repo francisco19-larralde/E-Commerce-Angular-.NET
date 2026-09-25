@@ -41,12 +41,20 @@ No es necesario instalar Angular CLI globalmente: los scripts usan la versión l
 
 1. Copiá `Backend/Ecommerce.Api/appsettings.Example.json` como `Backend/Ecommerce.Api/appsettings.Development.json`.
 2. Reemplazá la clave JWT del archivo local por una clave aleatoria de al menos 32 caracteres.
-3. Opcionalmente, configurá el administrador inicial con User Secrets:
+3. Configurá el administrador inicial de desarrollo con User Secrets:
 
    ```bash
    dotnet user-secrets set "AdminSeed:Email" "admin@ecommerce.local" --project Backend/Ecommerce.Api
    dotnet user-secrets set "AdminSeed:Password" "AdminLocal1!" --project Backend/Ecommerce.Api
    ```
+
+   Credenciales locales después de iniciar o reiniciar la API:
+
+   - Email: `admin@ecommerce.local`
+   - Contraseña: `AdminLocal1!`
+
+   Estas credenciales son solo para desarrollo. El administrador se crea al
+   arrancar la API y no deben reutilizarse en producción.
 
 4. Aplicá las migraciones:
 

@@ -1,4 +1,5 @@
 using Ecommerce.Api.Data;
+using Ecommerce.Api.DTOs;
 using Ecommerce.Api.Models;
 using Ecommerce.Api.Services;
 using Microsoft.AspNetCore.Http;
@@ -46,6 +47,7 @@ public sealed class ImagenServiceTests : IAsyncLifetime
         Assert.True(resultado.Exito);
         Assert.Equal(_almacenamiento.UrlGenerada, producto.ImagenUrl);
         Assert.Equal(".jpg", _almacenamiento.ExtensionGuardada);
+        Assert.Equal($"{producto.Nombre}-{producto.Id}", _almacenamiento.NombreArchivoGuardado);
     }
 
     [Fact]
@@ -58,6 +60,42 @@ public sealed class ImagenServiceTests : IAsyncLifetime
         await _service.SubirImagenAsync(producto.Id, archivo, "https://api.example.test");
 
         Assert.Contains("https://api.example.test/uploads/productos/anterior.jpg", _almacenamiento.Eliminadas);
+    }
+
+    [Fact]
+    public async Task Reemplazar_imagen_en_la_misma_url_no_elimina_el_archivo_nuevo()
+    {
+        const string imagenUrl = "https://api.example.test/uploads/productos/producto-1.jpg";
+        var producto = await CrearProductoAsync(imagenUrl);
+        _almacenamiento.UrlGenerada = imagenUrl;
+        var contenido = new MemoryStream([1, 2, 3]);
+        var archivo = new FormFile(contenido, 0, contenido.Length, "archivo", "nueva.jpg");
+
+        await _service.SubirImagenAsync(producto.Id, archivo, "https://api.example.test");
+
+        Assert.DoesNotContain(imagenUrl, _almacenamiento.Eliminadas);
+    }
+
+    [Fact]
+    public async Task Actualizar_producto_no_borra_la_imagen_persistida()
+    {
+        const string imagenUrl = "https://api.example.test/uploads/productos/producto-1.jpg";
+        var producto = await CrearProductoAsync(imagenUrl);
+        var service = new ProductoService(_context);
+        var dto = new CrearProductoDto
+        {
+            Nombre = "Producto actualizado",
+            Descripcion = "Descripción actualizada",
+            Precio = 250m,
+            Stock = 3,
+            ImagenUrl = null,
+            CategoriaId = producto.CategoriaId
+        };
+
+        var resultado = await service.ActualizarAsync(producto.Id, dto);
+
+        Assert.True(resultado.Exito);
+        Assert.Equal(imagenUrl, producto.ImagenUrl);
     }
 
     private async Task<Producto> CrearProductoAsync(string? imagenUrl = null)
@@ -77,13 +115,19 @@ public sealed class ImagenServiceTests : IAsyncLifetime
 
     private sealed class AlmacenamientoFalso : IAlmacenamientoImagenes
     {
-        public string UrlGenerada { get; } = "https://cdn.example.test/nueva.jpg";
+        public string UrlGenerada { get; set; } = "https://cdn.example.test/nueva.jpg";
         public string? ExtensionGuardada { get; private set; }
+        public string? NombreArchivoGuardado { get; private set; }
         public List<string> Eliminadas { get; } = [];
 
-        public Task<string> GuardarAsync(IFormFile archivo, string extension, string urlBase)
+        public Task<string> GuardarAsync(
+            IFormFile archivo,
+            string extension,
+            string nombreArchivo,
+            string urlBase)
         {
             ExtensionGuardada = extension;
+            NombreArchivoGuardado = nombreArchivo;
             return Task.FromResult(UrlGenerada);
         }
 

@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Http;
+using System.Globalization;
+using System.Text;
 
 namespace Ecommerce.Api.Services;
 
@@ -13,19 +15,36 @@ public class AlmacenamientoImagenesLocal : IAlmacenamientoImagenes
         _urlPublicaConfigurada = configuration["ImageStorage:PublicBaseUrl"]?.TrimEnd('/');
     }
 
-    public async Task<string> GuardarAsync(IFormFile archivo, string extension, string urlBase)
+    public async Task<string> GuardarAsync(
+        IFormFile archivo,
+        string extension,
+        string nombreArchivo,
+        string urlBase)
     {
         var carpeta = ObtenerCarpeta();
         Directory.CreateDirectory(carpeta);
 
-        var nombreArchivo = $"{Guid.NewGuid()}{extension}";
-        var rutaFisica = Path.Combine(carpeta, nombreArchivo);
+        var nombreSeguro = NormalizarNombreArchivo(nombreArchivo);
+        var nombreFinal = $"{nombreSeguro}{extension}";
+        var rutaFisica = Path.Combine(carpeta, nombreFinal);
+        var rutaTemporal = Path.Combine(carpeta, $".{Guid.NewGuid():N}.tmp");
 
-        await using var stream = new FileStream(rutaFisica, FileMode.CreateNew, FileAccess.Write);
-        await archivo.CopyToAsync(stream);
+        try
+        {
+            await using (var stream = new FileStream(rutaTemporal, FileMode.CreateNew, FileAccess.Write))
+            {
+                await archivo.CopyToAsync(stream);
+            }
+
+            File.Move(rutaTemporal, rutaFisica, overwrite: true);
+        }
+        finally
+        {
+            if (File.Exists(rutaTemporal)) File.Delete(rutaTemporal);
+        }
 
         var basePublica = _urlPublicaConfigurada ?? urlBase.TrimEnd('/');
-        return $"{basePublica}/uploads/productos/{nombreArchivo}";
+        return $"{basePublica}/uploads/productos/{nombreFinal}";
     }
 
     public Task EliminarAsync(string? urlImagen)
@@ -46,5 +65,35 @@ public class AlmacenamientoImagenesLocal : IAlmacenamientoImagenes
     {
         var raiz = _entorno.WebRootPath ?? Path.Combine(_entorno.ContentRootPath, "wwwroot");
         return Path.Combine(raiz, "uploads", "productos");
+    }
+
+    private static string NormalizarNombreArchivo(string nombre)
+    {
+        var normalizado = nombre.Normalize(NormalizationForm.FormD);
+        var resultado = new StringBuilder();
+        var separadorPendiente = false;
+
+        foreach (var caracter in normalizado)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(caracter) == UnicodeCategory.NonSpacingMark)
+            {
+                continue;
+            }
+
+            if (char.IsLetterOrDigit(caracter))
+            {
+                if (separadorPendiente && resultado.Length > 0) resultado.Append('-');
+                resultado.Append(char.ToLowerInvariant(caracter));
+                separadorPendiente = false;
+            }
+            else
+            {
+                separadorPendiente = true;
+            }
+
+            if (resultado.Length >= 120) break;
+        }
+
+        return resultado.Length == 0 ? "producto" : resultado.ToString().TrimEnd('-');
     }
 }

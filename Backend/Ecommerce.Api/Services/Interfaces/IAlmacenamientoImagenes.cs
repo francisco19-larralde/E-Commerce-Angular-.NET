@@ -4,6 +4,10 @@ namespace Ecommerce.Api.Services;
 
 public interface IAlmacenamientoImagenes
 {
-    Task<string> GuardarAsync(IFormFile archivo, string extension, string urlBase);
+    Task<string> GuardarAsync(
+        IFormFile archivo,
+        string extension,
+        string nombreArchivo,
+        string urlBase);
     Task EliminarAsync(string? urlImagen);
 }

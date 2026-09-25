@@ -120,7 +120,6 @@ public class ProductoService : IProductoService
         producto.Descripcion = dto.Descripcion;
         producto.Precio = dto.Precio;
         producto.Stock = dto.Stock;
-        producto.ImagenUrl = dto.ImagenUrl;
         producto.Destacado = dto.Destacado;
         producto.CategoriaId = dto.CategoriaId;
 
