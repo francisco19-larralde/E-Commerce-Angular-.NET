@@ -1,15 +1,15 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
 import { Carrito } from '../Models/carrito.model';
+import { API_URL } from '../config/api-url.token';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CarritoService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/carrito`;
+  private apiUrl = `${inject(API_URL)}/carrito`;
 
   private carritoActual = signal<Carrito | null>(null);
   carrito = this.carritoActual.asReadonly();
@@ -48,5 +48,9 @@ export class CarritoService {
     this.http.delete(this.apiUrl).subscribe({
       next: () => this.carritoActual.set(null)
     });
+  }
+
+  limpiarLocal(): void {
+    this.carritoActual.set(null);
   }
 }

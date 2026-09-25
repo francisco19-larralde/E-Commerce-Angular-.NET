@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { API_URL } from '../config/api-url.token';
 import { Variante } from '../Models/producto.model';
 
 export interface CrearVarianteRequest {
@@ -15,7 +15,7 @@ export interface CrearVarianteRequest {
 })
 export class VarianteService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/productos`;
+  private apiUrl = `${inject(API_URL)}/productos`;
 
   obtenerPorProducto(productoId: number): Observable<Variante[]> {
     return this.http.get<Variante[]>(`${this.apiUrl}/${productoId}/variantes`);

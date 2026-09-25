@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { API_URL } from '../config/api-url.token';
 import { Producto } from '../Models/producto.model';
 import { Paginacion } from '../Models/paginacion.model';
 import { FiltroCatalogo } from '../Models/filtro-catalogo.model';
@@ -27,7 +27,7 @@ export interface ActualizarEstadoRequest {
 })
 export class ProductoService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/productos`;
+  private apiUrl = `${inject(API_URL)}/productos`;
 
   obtenerTodos(): Observable<Producto[]> {
     return this.http.get<Producto[]>(this.apiUrl);

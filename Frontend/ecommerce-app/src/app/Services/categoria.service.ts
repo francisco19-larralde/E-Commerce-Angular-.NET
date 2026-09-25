@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { API_URL } from '../config/api-url.token';
 import { Categoria, CategoriaHome, CategoriaAdmin } from '../Models/categoria.model';
 
 export interface CategoriaRequest {
@@ -15,7 +15,7 @@ export interface CategoriaRequest {
 })
 export class CategoriaService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/categorias`;
+  private apiUrl = `${inject(API_URL)}/categorias`;
 
   obtenerTodas(): Observable<Categoria[]> {
     return this.http.get<Categoria[]>(this.apiUrl);

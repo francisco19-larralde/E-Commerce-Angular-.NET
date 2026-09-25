@@ -7,15 +7,15 @@ namespace Ecommerce.Api.Services;
 public class ImagenService : IImagenService
 {
     private readonly AppDbContext _context;
-    private readonly IWebHostEnvironment _entorno;
+    private readonly IAlmacenamientoImagenes _almacenamiento;
 
     private static readonly string[] ExtensionesPermitidas = [".jpg", ".jpeg", ".png", ".webp"];
     private const long TamanioMaximoBytes = 5 * 1024 * 1024; // 5 MB
 
-    public ImagenService(AppDbContext context, IWebHostEnvironment entorno)
+    public ImagenService(AppDbContext context, IAlmacenamientoImagenes almacenamiento)
     {
         _context = context;
-        _entorno = entorno;
+        _almacenamiento = almacenamiento;
     }
 
     public async Task<ResultadoOperacion<string>> SubirImagenAsync(int productoId, IFormFile archivo, string urlBase)
@@ -43,24 +43,21 @@ public class ImagenService : IImagenService
                 "Formato no permitido. Usá JPG, PNG o WEBP", TipoError.ValidacionNegocio);
         }
 
+        var urlAnterior = producto.ImagenUrl;
+        var urlPublica = await _almacenamiento.GuardarAsync(archivo, extension, urlBase);
+        producto.ImagenUrl = urlPublica;
 
-        var raiz = _entorno.WebRootPath ?? Path.Combine(_entorno.ContentRootPath, "wwwroot");
-        var carpeta = Path.Combine(raiz, "uploads", "productos");
-        Directory.CreateDirectory(carpeta);
-
-        var nombreArchivo = $"{Guid.NewGuid()}{extension}";
-        var rutaFisica = Path.Combine(carpeta, nombreArchivo);
-
-        using (var stream = new FileStream(rutaFisica, FileMode.Create))
+        try
         {
-            await archivo.CopyToAsync(stream);
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            await _almacenamiento.EliminarAsync(urlPublica);
+            throw;
         }
 
-        BorrarArchivoAnteriorSiExiste(producto.ImagenUrl);
-
-        var urlPublica = $"{urlBase}/uploads/productos/{nombreArchivo}";
-        producto.ImagenUrl = urlPublica;
-        await _context.SaveChangesAsync();
+        await _almacenamiento.EliminarAsync(urlAnterior);
 
         return ResultadoOperacion<string>.Ok(urlPublica);
     }
@@ -73,24 +70,11 @@ public class ImagenService : IImagenService
             return ResultadoOperacion.Fallo("El producto no existe", TipoError.NoEncontrado);
         }
 
-        BorrarArchivoAnteriorSiExiste(producto.ImagenUrl);
+        var urlAnterior = producto.ImagenUrl;
         producto.ImagenUrl = null;
         await _context.SaveChangesAsync();
+        await _almacenamiento.EliminarAsync(urlAnterior);
 
         return ResultadoOperacion.Ok();
-    }
-
-    private void BorrarArchivoAnteriorSiExiste(string? urlAnterior)
-    {
-        if (string.IsNullOrWhiteSpace(urlAnterior)) return;
-
-        var raiz = _entorno.WebRootPath ?? Path.Combine(_entorno.ContentRootPath, "wwwroot");
-        var nombreArchivo = Path.GetFileName(urlAnterior);
-        var rutaFisica = Path.Combine(raiz, "uploads", "productos", nombreArchivo);
-
-        if (File.Exists(rutaFisica))
-        {
-            File.Delete(rutaFisica);
-        }
     }
 }

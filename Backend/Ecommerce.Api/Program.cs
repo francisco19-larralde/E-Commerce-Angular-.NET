@@ -104,11 +104,36 @@ builder.Services.AddScoped<IOrdenService, OrdenService>();
 builder.Services.AddScoped<IEstadisticaService, EstadisticaService>();
 builder.Services.AddScoped<IImagenService, ImagenService>();
 
+var proveedorImagenes = builder.Configuration["ImageStorage:Provider"] ?? "Local";
+if (proveedorImagenes.Equals("Local", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddScoped<IAlmacenamientoImagenes, AlmacenamientoImagenesLocal>();
+}
+else
+{
+    throw new InvalidOperationException(
+        $"El proveedor de imágenes '{proveedorImagenes}' no está registrado. Implementá IAlmacenamientoImagenes y registralo en Program.cs.");
+}
+
 builder.Services.AddCors(options =>
 {
+    var origenesPermitidos = builder.Configuration
+        .GetSection("Cors:AllowedOrigins")
+        .Get<string[]>()?
+        .Where(origen => !string.IsNullOrWhiteSpace(origen))
+        .Select(origen => origen.Trim().TrimEnd('/'))
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .ToArray() ?? [];
+
+    if (origenesPermitidos.Length == 0)
+    {
+        throw new InvalidOperationException(
+            "Falta Cors:AllowedOrigins. Configurá al menos el origen del frontend.");
+    }
+
     options.AddPolicy("PermitirAngular", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins(origenesPermitidos)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

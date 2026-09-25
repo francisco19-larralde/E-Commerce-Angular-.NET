@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { API_URL } from '../config/api-url.token';
 import { Orden } from '../Models/orden.model';
 
 export interface CheckoutRequest {
@@ -17,7 +17,7 @@ export interface CheckoutRequest {
 })
 export class OrdenService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/ordenes`;
+  private apiUrl = `${inject(API_URL)}/ordenes`;
 
   checkout(datos: CheckoutRequest): Observable<Orden> {
     return this.http.post<Orden>(`${this.apiUrl}/checkout`, datos);

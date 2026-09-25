@@ -1,10 +1,10 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, computed, effect, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
 import { LoginRequest, RegistroRequest, AuthResponse } from '../Models/auth.model';
 import { CarritoService } from './carrito.service';
 import { TokenStorageService } from './tokenStorage.service';
+import { API_URL } from '../config/api-url.token';
 
 
 @Injectable({
@@ -14,18 +14,32 @@ export class AuthService {
   private http = inject(HttpClient);
   private carritoService = inject(CarritoService);
   private tokenStorage = inject(TokenStorageService);
-  private apiUrl = `${environment.apiUrl}/auth`;
+  private apiUrl = `${inject(API_URL)}/auth`;
 
-  private usuarioActual = signal<AuthResponse | null>(this.tokenStorage.obtenerUsuarioGuardado());
-
-  usuario = this.usuarioActual.asReadonly();
-  estaLogueado = computed(() => this.usuarioActual() !== null);
-  esAdmin = computed(() => this.usuarioActual()?.roles.includes('Admin') ?? false);
+  usuario = this.tokenStorage.usuario;
+  estaLogueado = computed(() => this.usuario() !== null);
+  esAdmin = computed(() => this.usuario()?.roles.includes('Admin') ?? false);
 
   constructor() {
-    if (this.estaLogueado()) {
+    effect((onCleanup) => {
+      const usuario = this.usuario();
+
+      if (!usuario) {
+        this.carritoService.limpiarLocal();
+        return;
+      }
+
       this.carritoService.cargarCarrito();
-    }
+      const demora = Date.parse(usuario.expiracion) - Date.now();
+
+      if (demora <= 0) {
+        this.tokenStorage.limpiar();
+        return;
+      }
+
+      const temporizador = window.setTimeout(() => this.tokenStorage.limpiar(), demora);
+      onCleanup(() => window.clearTimeout(temporizador));
+    });
   }
 
   login(datos: LoginRequest): Observable<AuthResponse> {
@@ -42,12 +56,9 @@ export class AuthService {
 
   logout(): void {
     this.tokenStorage.limpiar();
-    this.usuarioActual.set(null);
   }
 
   private guardarSesion(respuesta: AuthResponse): void {
     this.tokenStorage.guardar(respuesta);
-    this.usuarioActual.set(respuesta);
-    this.carritoService.cargarCarrito();
   }
 }

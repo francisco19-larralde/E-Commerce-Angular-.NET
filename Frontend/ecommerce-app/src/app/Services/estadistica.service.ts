@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { API_URL } from '../config/api-url.token';
 import { ResumenVentas, VentaPorDia, ProductoMasVendido } from '../Models/estadisticas.model';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { ResumenVentas, VentaPorDia, ProductoMasVendido } from '../Models/estadi
 })
 export class EstadisticaService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/estadisticas`;
+  private apiUrl = `${inject(API_URL)}/estadisticas`;
 
   obtenerResumen(): Observable<ResumenVentas> {
     return this.http.get<ResumenVentas>(`${this.apiUrl}/resumen`);
