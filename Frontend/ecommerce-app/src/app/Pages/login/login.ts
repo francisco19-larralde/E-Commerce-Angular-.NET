@@ -39,7 +39,9 @@ export class Login {
       },
       error: (err) => {
         this.cargando.set(false);
-        this.errorMensaje.set(err.error?.mensaje ?? 'Email o contraseña incorrectos.');
+        this.errorMensaje.set(
+          err.error?.mensaje ?? err.error?.detail ?? 'Email o contraseña incorrectos.'
+        );
       }
     });
   }

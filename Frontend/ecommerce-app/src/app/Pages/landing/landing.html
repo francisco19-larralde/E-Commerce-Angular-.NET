@@ -31,84 +31,9 @@
   </header>
 
   <main>
-    <section class="landing-hero">
-      <div class="hero-copy">
-        <p class="eyebrow"><span></span> Selección online · Envíos a todo el país</p>
-        <h1 class="display-title">Objetos que hacen bien a lo cotidiano.</h1>
-        <p class="hero-description">
-          Una selección simple, actual y pensada para vos. Encontrá nuevos favoritos
-          y comprá online con una experiencia clara de principio a fin.
-        </p>
-        <div class="hero-actions">
-          <a routerLink="/home" class="primary-action">Explorar colección <span aria-hidden="true">→</span></a>
-          <a routerLink="/registro" class="text-action">Crear una cuenta</a>
-        </div>
-        <div class="hero-proof" aria-label="Beneficios de compra">
-          <div><strong>Compra protegida</strong><span>Datos y pagos seguros</span></div>
-          <div><strong>Envíos ágiles</strong><span>Seguimiento en cada etapa</span></div>
-          <div><strong>Atención real</strong><span>Estamos para ayudarte</span></div>
-        </div>
-      </div>
-
-      <div class="hero-visual">
-        <img src="/assets/store/landing-hero.jpg" alt="Selección de indumentaria y accesorios sobre una superficie clara" />
-        <div class="image-note">
-          <span>01</span><p>Nuevos esenciales<br /><strong>Edición 2026</strong></p>
-        </div>
-        <div class="round-stamp" aria-hidden="true">LUMA · OBJETOS · LUMA ·</div>
-      </div>
-    </section>
-
-    <div class="marquee" aria-hidden="true">
-      <span>NOVEDADES</span><i>✦</i><span>DISEÑO</span><i>✦</i><span>CALIDAD</span><i>✦</i>
-      <span>COMPRA SIMPLE</span><i>✦</i><span>NOVEDADES</span>
-    </div>
-
-    <section id="experiencia" class="editorial-section">
-      <div class="section-heading">
-        <p class="eyebrow"><span></span> Elegidos para acompañarte</p>
-        <h2 class="display-title">Menos ruido.<br />Mejores elecciones.</h2>
-        <p>No se trata de tener más, sino de encontrar eso que realmente suma.</p>
-      </div>
-
-      <div class="editorial-grid">
-        <article class="editorial-card">
-          <img src="/assets/store/home-editorial.jpg" alt="Calzado y accesorios en tonos neutros" loading="lazy" />
-          <div class="editorial-overlay">
-            <span>Selección de temporada</span>
-            <h3 class="display-title">Esenciales con intención</h3>
-            <a routerLink="/catalogo">Ver catálogo <span>→</span></a>
-          </div>
-        </article>
-
-        <article class="experience-card">
-          <span class="experience-number">02</span>
-          <div>
-            <p class="eyebrow"><span></span> Comprar online, mejor</p>
-            <h3 class="display-title">Todo lo importante, sin complicaciones.</h3>
-            <p>Buscá, compará y elegí desde cualquier dispositivo. Tu carrito y tus compras siempre a mano.</p>
-          </div>
-          <img src="/assets/store/shopping-experience.jpg" alt="Compra online con tarjeta sobre fondo verde" loading="lazy" />
-        </article>
-      </div>
-    </section>
-
-    <section id="beneficios" class="benefits-section">
-      <div class="benefit-intro">
-        <p class="eyebrow eyebrow--light"><span></span> Por qué Luma</p>
-        <h2 class="display-title">Hecho para que comprar se sienta fácil.</h2>
-      </div>
-      <div class="benefits-grid">
-        <article><span class="benefit-icon">✓</span><h3>Compra segura</h3><p>Tu información se mantiene protegida durante toda la experiencia.</p></article>
-        <article><span class="benefit-icon">↗</span><h3>Entrega clara</h3><p>Información simple y seguimiento para saber dónde está tu pedido.</p></article>
-        <article><span class="benefit-icon">↺</span><h3>Soporte cercano</h3><p>Una experiencia pensada para resolver, no para sumar pasos.</p></article>
-      </div>
-    </section>
-
-    <section class="final-cta">
-      <p>Tu próxima elección puede estar acá.</p>
-      <a routerLink="/home" class="display-title">Entrar a la tienda <span>→</span></a>
-    </section>
+    <app-landing-hero />
+    <app-landing-editorial />
+    <app-landing-benefits />
   </main>
 
   <footer class="landing-footer">

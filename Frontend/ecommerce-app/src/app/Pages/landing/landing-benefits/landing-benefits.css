@@ -1,0 +1,23 @@
+:host { display: block; }
+.eyebrow { display: flex; align-items: center; gap: .75rem; margin: 0 0 1.5rem; color: #e7b85d; font-size: .7rem; font-weight: 750; letter-spacing: .15em; text-transform: uppercase; }
+.eyebrow > span { width: 2.5rem; height: 1px; background: currentColor; }
+.benefits-section { padding: clamp(5rem, 9vw, 8rem) max(1rem, calc((100vw - 1240px) / 2)); color: #f8f4ed; background: #292522; }
+.benefit-intro { display: grid; grid-template-columns: .7fr 1.3fr; gap: 2rem; align-items: start; padding-bottom: 4rem; border-bottom: 1px solid rgba(248, 244, 237, .15); }
+.benefit-intro h2 { max-width: 800px; margin: 0; font-size: clamp(3rem, 5.8vw, 6.2rem); line-height: .92; }
+.benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(248, 244, 237, .14); }
+.benefits-grid article { padding: 2.5rem 2rem; background: #292522; }
+.benefit-icon { display: grid; width: 2.6rem; height: 2.6rem; place-items: center; margin-bottom: 4rem; border: 1px solid rgba(248, 244, 237, .3); border-radius: 50%; color: #e7b85d; }
+.benefits-grid h3 { margin: 0 0 .75rem; font-size: 1.05rem; }
+.benefits-grid p { margin: 0; color: rgba(248, 244, 237, .56); font-size: .84rem; line-height: 1.65; }
+.final-cta { padding: clamp(5rem, 10vw, 9rem) 1rem; text-align: center; background: #dfb158; }
+.final-cta p { margin: 0 0 1rem; font-size: .72rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+.final-cta a { color: #25211e; font-size: clamp(3.1rem, 7vw, 7.5rem); line-height: 1; text-decoration: none; }
+.final-cta a span { display: inline-block; transition: transform 180ms ease; }
+.final-cta a:hover span { transform: translateX(.6rem); }
+@media (max-width: 980px) {
+  .benefit-intro { grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+  .benefits-grid { grid-template-columns: 1fr; }
+  .benefit-icon { margin-bottom: 2rem; }
+}

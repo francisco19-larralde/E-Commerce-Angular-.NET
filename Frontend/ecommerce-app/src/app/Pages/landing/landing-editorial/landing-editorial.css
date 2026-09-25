@@ -1,0 +1,35 @@
+:host { display: block; }
+.eyebrow { display: flex; align-items: center; gap: .75rem; margin: 0 0 1.5rem; color: #9b4e35; font-size: .7rem; font-weight: 750; letter-spacing: .15em; text-transform: uppercase; }
+.eyebrow > span { width: 2.5rem; height: 1px; background: currentColor; }
+.editorial-section { width: min(100% - 2rem, 1240px); margin: 0 auto; padding: clamp(5rem, 10vw, 9rem) 0; }
+.section-heading { display: grid; grid-template-columns: 1fr 1.3fr .8fr; align-items: end; gap: 2rem; margin-bottom: 3rem; }
+.section-heading .eyebrow { align-self: start; }
+.section-heading h2 { margin: 0; font-size: clamp(2.8rem, 5vw, 5.2rem); line-height: .95; }
+.section-heading > p:last-child { margin: 0; color: rgba(37, 33, 30, .58); line-height: 1.7; }
+.editorial-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 1.5rem; }
+.editorial-card { position: relative; min-height: 650px; overflow: hidden; }
+.editorial-card img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.78); transition: transform 700ms ease; }
+.editorial-card:hover img { transform: scale(1.025); }
+.editorial-overlay { position: absolute; inset: auto 0 0; padding: 6rem 2.2rem 2.2rem; color: #fff; background: linear-gradient(transparent, rgba(20, 17, 15, .85)); }
+.editorial-overlay > span { font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; }
+.editorial-overlay h3 { margin: .65rem 0 1.5rem; font-size: clamp(2.3rem, 4vw, 4.25rem); line-height: .95; }
+.editorial-overlay a { color: inherit; font-size: .78rem; font-weight: 750; text-underline-offset: .4rem; }
+.editorial-overlay a span { margin-left: .6rem; }
+.experience-card { display: grid; grid-template-rows: auto 1fr 230px; min-height: 650px; padding: 1.8rem; color: #eef5ef; background: #27433d; }
+.experience-number { justify-self: end; font-size: .68rem; opacity: .62; }
+.experience-card h3 { max-width: 490px; margin: 0 0 1.3rem; font-size: clamp(2.5rem, 4vw, 4.4rem); line-height: .95; }
+.experience-card p:not(.eyebrow) { max-width: 450px; margin: 0; color: rgba(238, 245, 239, .65); line-height: 1.7; }
+.experience-card .eyebrow { color: #e7b85d; }
+.experience-card img { align-self: end; width: 100%; height: 210px; object-fit: cover; object-position: center 40%; filter: saturate(.7); }
+@media (max-width: 980px) {
+  .section-heading { grid-template-columns: 1fr 1fr; }
+  .section-heading .eyebrow { grid-column: 1 / -1; }
+  .editorial-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+  .section-heading { grid-template-columns: 1fr; }
+  .section-heading h2 { font-size: 3.4rem; }
+  .editorial-card, .experience-card { min-height: 540px; }
+  .experience-card { grid-template-rows: auto 1fr 170px; }
+  .experience-card img { height: 155px; }
+}

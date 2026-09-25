@@ -6,12 +6,20 @@ namespace Ecommerce.Api.Services;
 
 public class AuthService : IAuthService
 {
+    private const string MensajeLoginInvalido =
+        "Email o contraseña incorrectos, o cuenta temporalmente bloqueada";
+
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ITokenService _tokenService;
 
-    public AuthService(UserManager<ApplicationUser> userManager, ITokenService tokenService)
+    public AuthService(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        ITokenService tokenService)
     {
         _userManager = userManager;
+        _signInManager = signInManager;
         _tokenService = tokenService;
     }
 
@@ -54,14 +62,24 @@ public class AuthService : IAuthService
         if (usuario is null)
         {
             return ResultadoOperacion<AuthResponseDto>.Fallo(
-                "Email o contraseña incorrectos", TipoError.ValidacionNegocio);
+                MensajeLoginInvalido, TipoError.ValidacionNegocio);
         }
 
-        var passwordValida = await _userManager.CheckPasswordAsync(usuario, dto.Password);
-        if (!passwordValida)
+        var inicioSesion = await _signInManager.CheckPasswordSignInAsync(
+            usuario,
+            dto.Password,
+            lockoutOnFailure: true);
+
+        if (inicioSesion.IsLockedOut)
         {
             return ResultadoOperacion<AuthResponseDto>.Fallo(
-                "Email o contraseña incorrectos", TipoError.ValidacionNegocio);
+                MensajeLoginInvalido, TipoError.ValidacionNegocio);
+        }
+
+        if (!inicioSesion.Succeeded)
+        {
+            return ResultadoOperacion<AuthResponseDto>.Fallo(
+                MensajeLoginInvalido, TipoError.ValidacionNegocio);
         }
 
         var roles = await _userManager.GetRolesAsync(usuario);

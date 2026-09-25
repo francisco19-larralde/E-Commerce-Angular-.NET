@@ -22,7 +22,14 @@ export class Registro {
     nombre: ['', [Validators.required]],
     apellido: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).+$/)
+      ]
+    ]
   });
 
   onSubmit(): void {
@@ -41,7 +48,9 @@ export class Registro {
       },
       error: (err) => {
         this.cargando.set(false);
-        this.errorMensaje.set(err.error?.mensaje ?? 'Ocurrió un error al registrarte.');
+        this.errorMensaje.set(
+          err.error?.mensaje ?? err.error?.detail ?? 'Ocurrió un error al registrarte.'
+        );
       }
     });
   }

@@ -11,9 +11,12 @@ public static class DbInitializer
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var logger = scope.ServiceProvider
+            .GetRequiredService<ILoggerFactory>()
+            .CreateLogger("Ecommerce.Api.Data.DbInitializer");
 
         await SeedRolesAsync(roleManager);
-        await SeedAdminAsync(userManager, configuration);
+        await SeedAdminAsync(userManager, configuration, logger);
         await SeedCuponAsync(context);
 
 
@@ -36,14 +39,18 @@ public static class DbInitializer
         }
     }
 
-    private static async Task SeedAdminAsync(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+    private static async Task SeedAdminAsync(
+        UserManager<ApplicationUser> userManager,
+        IConfiguration configuration,
+        ILogger logger)
     {
         var email = configuration["AdminSeed:Email"];
         var password = configuration["AdminSeed:Password"];
 
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
-            Console.WriteLine("[DbInitializer] AdminSeed:Email / AdminSeed:Password no configurados. Se omite la creación del admin de prueba.");
+            logger.LogInformation(
+                "AdminSeed no está configurado; se omite la creación del administrador inicial");
             return;
         }
 
@@ -67,7 +74,9 @@ public static class DbInitializer
         else
         {
             var errores = string.Join(" | ", resultado.Errors.Select(e => e.Description));
-            Console.WriteLine($"[DbInitializer] No se pudo crear el admin de prueba: {errores}");
+            logger.LogError(
+                "No se pudo crear el administrador inicial. Errores: {IdentityErrors}",
+                errores);
         }
     }
 

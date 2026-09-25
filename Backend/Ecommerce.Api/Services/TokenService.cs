@@ -3,16 +3,17 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Ecommerce.Api.Models;
+using Ecommerce.Api.Configuration;
 
 namespace Ecommerce.Api.Services;
 
 public class TokenService : ITokenService
 {
-    private readonly IConfiguration _configuration;
+    private readonly JwtOptions _options;
 
-    public TokenService(IConfiguration configuration)
+    public TokenService(JwtOptions options)
     {
-        _configuration = configuration;
+        _options = options;
     }
 
     public (string Token, DateTime Expiracion) GenerarToken(ApplicationUser usuario, IList<string> roles)
@@ -27,15 +28,14 @@ public class TokenService : ITokenService
 
         claims.AddRange(roles.Select(rol => new Claim(ClaimTypes.Role, rol)));
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Key));
         var credenciales = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var minutos = int.Parse(_configuration["Jwt:ExpiracionMinutos"]!);
-        var expiracion = DateTime.UtcNow.AddMinutes(minutos);
+        var expiracion = DateTime.UtcNow.AddMinutes(_options.ExpiracionMinutos);
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
+            issuer: _options.Issuer,
+            audience: _options.Audience,
             claims: claims,
             expires: expiracion,
             signingCredentials: credenciales

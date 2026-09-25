@@ -1,0 +1,9 @@
+<a routerLink="/carrito" class="nav-icon-action" aria-label="Ver carrito">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round"
+      d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75A2.25 2.25 0 0 0 8.93 14.5h7.94a2.25 2.25 0 0 0 2.18-1.75l1.35-5.625a.75.75 0 0 0-.728-.925H5.106Zm3.894 12.728a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm9 0a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z" />
+  </svg>
+  @if (carritoService.cantidadItems() > 0) {
+  <span>{{ carritoService.cantidadItems() }}</span>
+  }
+</a>

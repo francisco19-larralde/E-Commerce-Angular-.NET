@@ -1,0 +1,5 @@
+:host { display: block; }
+.nav-icon-action { position: relative; display: grid; width: 2.55rem; height: 2.55rem; place-items: center; border: 1px solid rgba(41, 37, 34, .16); border-radius: 50%; color: #292522; text-decoration: none; transition: border-color 160ms ease, background 160ms ease; }
+.nav-icon-action:hover { border-color: #a84f35; background: rgba(168, 79, 53, .08); }
+svg { width: 1.15rem; height: 1.15rem; }
+span { position: absolute; top: -.28rem; right: -.28rem; display: grid; min-width: 1.1rem; height: 1.1rem; place-items: center; padding: 0 .2rem; border-radius: 999px; color: #fff; background: #a84f35; font-size: .58rem; font-weight: 800; }

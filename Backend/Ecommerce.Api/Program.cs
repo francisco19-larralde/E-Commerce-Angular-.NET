@@ -3,7 +3,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.RateLimiting;
 using System.Text;
+using Ecommerce.Api.Configuration;
+using Ecommerce.Api.Health;
 using Ecommerce.Api.Data;
 using Ecommerce.Api.Services;
 using Ecommerce.Api.Services.Interfaces;
@@ -11,9 +18,30 @@ using Ecommerce.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
+if (builder.Environment.IsProduction())
+{
+    builder.Logging.AddJsonConsole();
+}
+else
+{
+    builder.Logging.AddSimpleConsole(options =>
+    {
+        options.SingleLine = true;
+        options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
+    });
+}
 
 
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Instance = context.HttpContext.Request.Path;
+        context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+    };
+});
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -48,28 +76,44 @@ if (string.IsNullOrWhiteSpace(connectionString))
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+var maximoIntentosFallidos = builder.Configuration.GetValue<int?>(
+    "Security:Lockout:MaxFailedAccessAttempts") ?? 5;
+var minutosBloqueo = builder.Configuration.GetValue<int?>(
+    "Security:Lockout:DefaultLockoutMinutes") ?? 15;
+if (maximoIntentosFallidos <= 0 || minutosBloqueo <= 0)
+{
+    throw new InvalidOperationException("La configuración de bloqueo debe usar valores mayores a cero.");
+}
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 6;
-
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
 
     options.SignIn.RequireConfirmedEmail = false;
+
+    options.Lockout.AllowedForNewUsers = true;
+    options.Lockout.MaxFailedAccessAttempts = maximoIntentosFallidos;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(minutosBloqueo);
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
 
-var jwtKey = builder.Configuration["Jwt:Key"];
-if (string.IsNullOrWhiteSpace(jwtKey))
+var jwtOptions = builder.Configuration
+    .GetSection(JwtOptions.SectionName)
+    .Get<JwtOptions>()
+    ?? throw new InvalidOperationException("Falta la sección de configuración Jwt.");
+var erroresJwt = new List<ValidationResult>();
+if (!Validator.TryValidateObject(jwtOptions, new ValidationContext(jwtOptions), erroresJwt, true))
 {
     throw new InvalidOperationException(
-        "Falta Jwt:Key. Configurala en appsettings.Development.json, User Secrets o la variable Jwt__Key.");
+        $"La configuración JWT no es válida: {string.Join(" | ", erroresJwt.Select(e => e.ErrorMessage))}");
 }
+builder.Services.AddSingleton(jwtOptions);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -84,13 +128,58 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        ValidIssuer = jwtOptions.Issuer,
+        ValidAudience = jwtOptions.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+        ClockSkew = TimeSpan.FromSeconds(30)
     };
 });
 
 builder.Services.AddAuthorization();
+builder.Services.AddHealthChecks()
+    .AddCheck("self", () => HealthCheckResult.Healthy(), tags: ["live"])
+    .AddCheck<DatabaseHealthCheck>("database", tags: ["ready"]);
+
+var limiteAutenticacion = builder.Configuration.GetValue<int?>(
+    "Security:RateLimit:Authentication:PermitLimit") ?? 5;
+var ventanaAutenticacionMinutos = builder.Configuration.GetValue<int?>(
+    "Security:RateLimit:Authentication:WindowMinutes") ?? 1;
+if (limiteAutenticacion <= 0 || ventanaAutenticacionMinutos <= 0)
+{
+    throw new InvalidOperationException("La configuración de rate limiting debe usar valores mayores a cero.");
+}
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("autenticacion", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString() ?? "ip-desconocida",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = limiteAutenticacion,
+                Window = TimeSpan.FromMinutes(ventanaAutenticacionMinutos),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
+    options.OnRejected = async (context, _) =>
+    {
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+        {
+            context.HttpContext.Response.Headers.RetryAfter =
+                Math.Ceiling(retryAfter.TotalSeconds).ToString();
+        }
+
+        await Results.Problem(
+            statusCode: StatusCodes.Status429TooManyRequests,
+            title: "Demasiadas solicitudes",
+            detail: "Esperá unos instantes antes de volver a intentar.",
+            extensions: new Dictionary<string, object?>
+            {
+                ["traceId"] = context.HttpContext.TraceIdentifier
+            }).ExecuteAsync(context.HttpContext);
+    };
+});
 
 
 
@@ -141,6 +230,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
@@ -151,11 +242,27 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("PermitirAngular");
 
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health/live", new HealthCheckOptions
+{
+    Predicate = registration => registration.Tags.Contains("live"),
+    ResponseWriter = HealthCheckResponseWriter.WriteAsync
+}).AllowAnonymous();
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = registration => registration.Tags.Contains("ready"),
+    ResponseWriter = HealthCheckResponseWriter.WriteAsync
+}).AllowAnonymous();
 
-await DbInitializer.SeedAsync(app.Services, app.Configuration, app.Environment);
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    await DbInitializer.SeedAsync(app.Services, app.Configuration, app.Environment);
+}
 
 app.Run();
+
+public partial class Program;

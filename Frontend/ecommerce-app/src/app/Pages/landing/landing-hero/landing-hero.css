@@ -1,0 +1,43 @@
+:host { display: block; }
+.landing-hero { width: min(100% - 2rem, 1360px); min-height: calc(100vh - 88px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: clamp(2rem, 5vw, 6rem); align-items: center; padding: 4.5rem 0 5rem; }
+.hero-copy { max-width: 650px; }
+.eyebrow { display: flex; align-items: center; gap: .75rem; margin: 0 0 1.5rem; color: #9b4e35; font-size: .7rem; font-weight: 750; letter-spacing: .15em; text-transform: uppercase; }
+.eyebrow > span { width: 2.5rem; height: 1px; background: currentColor; }
+h1 { max-width: 680px; margin: 0; font-size: clamp(3.75rem, 6.4vw, 7.2rem); line-height: .88; }
+.hero-description { max-width: 560px; margin: 2rem 0 0; color: rgba(37, 33, 30, .67); font-size: clamp(1rem, 1.3vw, 1.16rem); line-height: 1.7; }
+.hero-actions { display: flex; align-items: center; gap: 2rem; margin-top: 2.25rem; }
+.primary-action { display: inline-flex; align-items: center; gap: 2rem; padding: 1rem 1.15rem 1rem 1.4rem; color: #fffaf3; background: #a84f35; border: 1px solid #a84f35; border-radius: 999px; font-size: .82rem; font-weight: 750; text-decoration: none; transition: transform 180ms ease, background 180ms ease; }
+.primary-action span { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; color: #a84f35; background: #fffaf3; }
+.primary-action:hover { transform: translateY(-2px); background: #8f3f29; }
+.text-action { color: inherit; font-size: .82rem; font-weight: 700; text-underline-offset: .35rem; }
+.hero-proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: clamp(3rem, 6vh, 5.5rem); padding-top: 1.25rem; border-top: 1px solid rgba(37, 33, 30, .14); }
+.hero-proof div { display: flex; flex-direction: column; gap: .25rem; }
+.hero-proof strong { font-size: .78rem; }
+.hero-proof span { color: rgba(37, 33, 30, .5); font-size: .68rem; }
+.hero-visual { position: relative; min-height: min(72vh, 740px); }
+.hero-visual::before { content: ""; position: absolute; inset: 6% -4% -4% 10%; border-radius: 50% 50% 4% 4%; background: #d9c9af; }
+.hero-visual img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 48% 48% 3rem 3rem; filter: saturate(.86) contrast(1.02); }
+.image-note { position: absolute; right: -1px; bottom: -1px; display: flex; align-items: flex-start; gap: 1rem; min-width: 230px; padding: 1.2rem; background: #f8f4ed; }
+.image-note span { color: #a84f35; font-size: .66rem; font-weight: 800; }
+.image-note p { margin: 0; color: rgba(37, 33, 30, .58); font-size: .76rem; line-height: 1.5; }
+.image-note strong { color: #25211e; font-size: .86rem; }
+.round-stamp { position: absolute; top: 12%; left: -2.8rem; display: grid; width: 5.8rem; height: 5.8rem; place-items: center; border: 1px solid rgba(37, 33, 30, .28); border-radius: 50%; color: #25211e; background: #e7b85d; font-size: .55rem; font-weight: 800; letter-spacing: .1em; text-align: center; transform: rotate(-14deg); }
+.marquee { display: flex; gap: 2.4rem; align-items: center; justify-content: center; min-width: max-content; padding: 1.1rem 2rem; color: #f8f4ed; background: #272320; font-size: .67rem; font-weight: 750; letter-spacing: .19em; }
+.marquee i { color: #e7b85d; font-style: normal; }
+@media (max-width: 980px) {
+  .landing-hero { grid-template-columns: 1fr; padding-top: 3.5rem; }
+  .hero-copy { max-width: 760px; }
+  .hero-visual { min-height: 650px; }
+}
+@media (max-width: 680px) {
+  .landing-hero { min-height: auto; padding: 3.5rem 0 2rem; }
+  h1 { font-size: clamp(3.4rem, 17vw, 5.2rem); }
+  .hero-actions { align-items: flex-start; flex-direction: column; gap: 1.2rem; }
+  .hero-proof { grid-template-columns: 1fr; gap: .75rem; }
+  .hero-proof div { flex-direction: row; justify-content: space-between; }
+  .hero-visual { min-height: 480px; margin-top: 1rem; }
+  .hero-visual::before { inset: 5% -4% -3% 6%; }
+  .hero-visual img { border-radius: 45% 45% 1.5rem 1.5rem; }
+  .round-stamp { left: -.5rem; width: 4.8rem; height: 4.8rem; }
+  .image-note { min-width: 190px; }
+}

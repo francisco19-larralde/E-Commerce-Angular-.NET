@@ -45,7 +45,7 @@ No es necesario instalar Angular CLI globalmente: los scripts usan la versión l
 
    ```bash
    dotnet user-secrets set "AdminSeed:Email" "admin@ecommerce.local" --project Backend/Ecommerce.Api
-   dotnet user-secrets set "AdminSeed:Password" "una-clave-segura" --project Backend/Ecommerce.Api
+   dotnet user-secrets set "AdminSeed:Password" "AdminLocal1!" --project Backend/Ecommerce.Api
    ```
 
 4. Aplicá las migraciones:
@@ -121,6 +121,10 @@ npm run test:ci
 - Los controladores trabajan con DTOs y delegan las reglas de negocio a servicios.
 - Las rutas Angular se cargan de forma diferida para reducir el bundle inicial.
 - La sesión descarta tokens vencidos automáticamente y se cierra ante respuestas `401` de la API.
+- Login y registro tienen rate limiting; los intentos fallidos bloquean temporalmente la cuenta.
+- Las excepciones y errores HTTP sin cuerpo se devuelven como `ProblemDetails` con un `traceId`.
+- `/health/live` informa si el proceso responde y `/health/ready` comprueba la conexión a la base.
+- Producción emite logs JSON estructurados; desarrollo usa una consola legible de una sola línea.
 - La base aplica índices únicos y constraints para proteger stock, cantidades, cupones y carritos.
 - Las imágenes usan `IAlmacenamientoImagenes`; desarrollo registra el proveedor local y un proveedor externo puede reemplazarlo sin cambiar la lógica de productos.
 - Los secretos y los archivos de configuración locales están excluidos del repositorio.

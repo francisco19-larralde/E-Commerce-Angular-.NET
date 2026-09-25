@@ -15,6 +15,9 @@ public class RegistroDto
     public required string Email { get; set; }
 
     [Required(ErrorMessage = "La contraseña es obligatoria")]
-    [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
+    [MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres")]
+    [RegularExpression(
+        @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).+$",
+        ErrorMessage = "La contraseña debe incluir mayúscula, minúscula, número y símbolo")]
     public required string Password { get; set; }
 }

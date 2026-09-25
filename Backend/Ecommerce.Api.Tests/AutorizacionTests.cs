@@ -1,6 +1,7 @@
 using System.Reflection;
 using Ecommerce.Api.Controllers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Xunit;
 
 namespace Ecommerce.Api.Tests;
@@ -27,5 +28,14 @@ public class AutorizacionTests
 
         Assert.NotNull(authorize);
         Assert.Equal("Admin", authorize.Roles);
+    }
+
+    [Fact]
+    public void Autenticacion_tiene_rate_limiting()
+    {
+        var rateLimit = typeof(AuthController).GetCustomAttribute<EnableRateLimitingAttribute>();
+
+        Assert.NotNull(rateLimit);
+        Assert.Equal("autenticacion", rateLimit.PolicyName);
     }
 }

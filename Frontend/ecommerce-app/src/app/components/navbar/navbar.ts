@@ -1,18 +1,18 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
-import { CarritoService } from '../../Services/carrito.service';
 import { Buscador } from '../buscador/buscador';
+import { AccountMenu } from '../account-menu/account-menu';
+import { CartButton } from '../cart-button/cart-button';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, Buscador],
+  imports: [RouterLink, Buscador, AccountMenu, CartButton],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css'
 })
 export class Navbar {
   authService = inject(AuthService);
-  carritoService = inject(CarritoService);
   router = inject(Router);
   menuAbierto = signal(false);
 

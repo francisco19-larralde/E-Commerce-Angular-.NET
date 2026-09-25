@@ -16,54 +16,25 @@
 
     <div class="store-nav__actions">
       @if (authService.estaLogueado()) {
-        @if (authService.esAdmin()) {
-        <a routerLink="/admin/productos" class="nav-text-action">Administrar</a>
-        }
+      @if (authService.esAdmin()) {
+      <a routerLink="/admin/productos" class="nav-text-action">Administrar</a>
+      }
 
-        <a routerLink="/carrito" class="nav-icon-action" aria-label="Ver carrito">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75A2.25 2.25 0 0 0 8.93 14.5h7.94a2.25 2.25 0 0 0 2.18-1.75l1.35-5.625a.75.75 0 0 0-.728-.925H5.106Zm3.894 12.728a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm9 0a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z" />
-          </svg>
-          @if (carritoService.cantidadItems() > 0) {
-          <span class="nav-icon-action__count">{{ carritoService.cantidadItems() }}</span>
-          }
-        </a>
-
-        <details class="account-menu">
-          <summary aria-label="Abrir menú de usuario">
-            <span>{{ authService.usuario()?.nombre?.charAt(0)?.toUpperCase() }}</span>
-            <strong>{{ authService.usuario()?.nombre }}</strong>
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg>
-          </summary>
-          <div class="account-menu__panel">
-            <p>Mi cuenta</p>
-            <a routerLink="/mis-compras">Mis compras</a>
-            <button type="button" (click)="cerrarSesion()">Cerrar sesión</button>
-          </div>
-        </details>
+      <app-cart-button />
+      <app-account-menu />
       } @else {
-        <a routerLink="/login" class="nav-text-action">Ingresar</a>
-        <a routerLink="/registro" class="nav-primary-action">Crear cuenta</a>
+      <a routerLink="/login" class="nav-text-action">Ingresar</a>
+      <a routerLink="/registro" class="nav-primary-action">Crear cuenta</a>
       }
     </div>
 
     <div class="store-nav__mobile-actions">
       @if (authService.estaLogueado()) {
-      <a routerLink="/carrito" class="nav-icon-action" aria-label="Ver carrito">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75A2.25 2.25 0 0 0 8.93 14.5h7.94a2.25 2.25 0 0 0 2.18-1.75l1.35-5.625a.75.75 0 0 0-.728-.925H5.106Zm3.894 12.728a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm9 0a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z" />
-        </svg>
-        @if (carritoService.cantidadItems() > 0) {
-        <span class="nav-icon-action__count">{{ carritoService.cantidadItems() }}</span>
-        }
-      </a>
+      <app-cart-button />
       }
 
-      <button type="button" class="menu-toggle" [class.menu-toggle--open]="menuAbierto()"
-        (click)="alternarMenu()" [attr.aria-expanded]="menuAbierto()" aria-controls="mobile-store-menu"
-        aria-label="Abrir menú">
+      <button type="button" class="menu-toggle" [class.menu-toggle--open]="menuAbierto()" (click)="alternarMenu()"
+        [attr.aria-expanded]="menuAbierto()" aria-controls="mobile-store-menu" aria-label="Abrir menú">
         <span></span><span></span>
       </button>
     </div>
@@ -76,20 +47,20 @@
       <a routerLink="/home" (click)="cerrarMenu()"><span>01</span> Inicio <b>→</b></a>
       <a routerLink="/catalogo" (click)="cerrarMenu()"><span>02</span> Catálogo <b>→</b></a>
       @if (authService.estaLogueado()) {
-        <a routerLink="/mis-compras" (click)="cerrarMenu()"><span>03</span> Mis compras <b>→</b></a>
-        @if (authService.esAdmin()) {
-        <a routerLink="/admin/productos" (click)="cerrarMenu()"><span>04</span> Administrar <b>→</b></a>
-        }
+      <a routerLink="/mis-compras" (click)="cerrarMenu()"><span>03</span> Mis compras <b>→</b></a>
+      @if (authService.esAdmin()) {
+      <a routerLink="/admin/productos" (click)="cerrarMenu()"><span>04</span> Administrar <b>→</b></a>
+      }
       }
     </nav>
 
     <div class="mobile-menu__account">
       @if (authService.estaLogueado()) {
-        <p>Hola, <strong>{{ authService.usuario()?.nombre }}</strong></p>
-        <button type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+      <p>Hola, <strong>{{ authService.usuario()?.nombre }}</strong></p>
+      <button type="button" (click)="cerrarSesion()">Cerrar sesión</button>
       } @else {
-        <a routerLink="/login" (click)="cerrarMenu()">Ingresar</a>
-        <a routerLink="/registro" class="nav-primary-action" (click)="cerrarMenu()">Crear cuenta</a>
+      <a routerLink="/login" (click)="cerrarMenu()">Ingresar</a>
+      <a routerLink="/registro" class="nav-primary-action" (click)="cerrarMenu()">Crear cuenta</a>
       }
     </div>
   </div>

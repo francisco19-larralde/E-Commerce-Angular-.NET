@@ -1,0 +1,11 @@
+:host, details { position: relative; display: block; }
+summary { display: flex; align-items: center; gap: .55rem; list-style: none; cursor: pointer; }
+summary::-webkit-details-marker { display: none; }
+summary > span { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: 50%; color: #8f3f29; background: #efe1d7; font-size: .76rem; font-weight: 800; }
+summary strong { max-width: 90px; overflow: hidden; font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
+summary svg { width: .75rem; }
+.panel { position: absolute; top: calc(100% + 1rem); right: 0; width: 210px; padding: .75rem; border: 1px solid rgba(41, 37, 34, .13); border-radius: 1rem; background: #fffaf3; box-shadow: 0 20px 50px rgba(41, 37, 34, .12); }
+.panel p { margin: .25rem .45rem .6rem; color: rgba(41, 37, 34, .45); font-size: .62rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.panel a, .panel button { display: block; width: 100%; padding: .72rem .8rem; border: 0; border-radius: .7rem; color: #292522; background: transparent; font: inherit; font-size: .76rem; text-align: left; text-decoration: none; cursor: pointer; }
+.panel a:hover { background: #f2ece3; }
+.panel button { color: #a13f32; }
